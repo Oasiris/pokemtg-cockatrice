@@ -1,4 +1,6 @@
-
+/**
+ * A card, as modelled in Cockatrice.
+ */
 export type Card = {
     /** The card's name. */
     name: string
