@@ -1,4 +1,15 @@
-<card>
+<?xml version="1.0" encoding="UTF-8"?>
+<cockatrice_carddatabase version="4">
+  <sets>
+    <set>
+      <name>PMTG_82</name>
+      <longname>PokeMTG v8.2 (Pokemon Full Format) by Altilt</longname>
+      <settype>PlaneSculptors</settype>
+      <releasedate>2020-11-22</releasedate>
+    </set>
+  </sets>
+  <cards>
+  <card>
   <name>Alder Emblem</name>
   <text>You can&#8217;t lose the game as long as you control a card named Volcarona or named Champion Alder.</text>
   <prop>
@@ -23855,3 +23866,6 @@
   <set picurl="https://www.planesculptors.net/upload/799/5356/Forest.png" num="1549" rarity="">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>
+
+</cards>
+</cockatrice_carddatabase>

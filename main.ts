@@ -68,7 +68,7 @@ export class CardUtil {
         for (let item of matches) {
             item = item.replace(/"/g, '').replace(/i class=mtg /, '')
             if (item.startsWith("mana")) {
-                manaCost += item[item.length - 1].toUpperCase()
+                manaCost += item.slice(item.indexOf('mana') + 5).toUpperCase()
             } else if (item.startsWith("hybrid")) {
                 const left = item[item.length - 2]
                 const right = item[item.length - 1]
