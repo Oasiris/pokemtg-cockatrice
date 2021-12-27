@@ -1,3 +1,8 @@
+/**
+ * PlaneSculptors set data.
+ * Extracted by clicking "View Page Source" on the page:
+ * https://www.planesculptors.net/set/pokemon-full-format-pokemtg#cards
+ */
 const cardData = [
 	{
 		cardId: 1643775,

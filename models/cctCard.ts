@@ -104,7 +104,7 @@ export type CardSetStatus = {
     '@@rarity'?: CardRarity
 
     /** Optional. UUID of the card in this set; must be unique for every single card. */
-    '@@uuid'?: string
+    '@@uuid'?: number | string
 
     /** Optional. The card's multiverse ID. This is a special code assigned to each card in a specific game (MTG). */
     '@@muid'?: number | string

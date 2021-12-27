@@ -130,6 +130,7 @@ if (require.main === module) {
             '@@picurl': psCard.artUrl,
             '@@num': psCard.sequenceNumber,
             '@@rarity': psCard.rarityName.toLowerCase(),
+            '@@uuid': psCard.cardId,
         }
         let cardProperties: CardProperties = {
             // TODO: Differentiate here.
@@ -168,7 +169,6 @@ if (require.main === module) {
 
     // === Step 2 ===
     // Convert to XML using XMLBuilder.
-    const mini = cctCards.slice(8, 10)
 
     const options = {
         arrayNodeName: 'card',
@@ -182,6 +182,8 @@ if (require.main === module) {
     console.log(`Building finished.`)
 
     /// === Write ===
+    write(resolve(__dirname, `./out/pokemtg.json`), JSON.stringify(cctCards), 'utf8')
+    console.log(`Writing JSON complete.`)
     write(resolve(__dirname, `./out/pokemtg.xml`), cardsXmlString, 'utf8')
-    console.log(`Writing complete.`)
+    console.log(`Writing XML complete.`)
 }
