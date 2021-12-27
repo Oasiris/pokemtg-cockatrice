@@ -110,6 +110,30 @@ export class CardUtil {
         }
         return 1
     }
+
+    static formatRulesText(rulesTextHtml: string): string {
+        let out = rulesTextHtml
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg tap"><\/i><\/span>/g, '{T}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg black"><\/i><\/span>/g, '{B}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg white"><\/i><\/span>/g, '{W}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg red"><\/i><\/span>/g, '{R}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg blue"><\/i><\/span>/g, '{U}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg green"><\/i><\/span>/g, '{G}')
+        out = out.replace(
+            /<span class="icon-wrapper"><i class="mtg colorless"><\/i><\/span>/g,
+            '{C}',
+        )
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg mana-1"><\/i><\/span>/g, '{1}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg mana-2"><\/i><\/span>/g, '{2}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg mana-3"><\/i><\/span>/g, '{3}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg mana-4"><\/i><\/span>/g, '{4}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg mana-5"><\/i><\/span>/g, '{5}')
+        out = out.replace(/<span class="icon-wrapper"><i class="mtg mana-6"><\/i><\/span>/g, '{6}')
+
+        out = out.replace(/<i>/g, '')
+        out = out.replace(/<\/i>/g, '')
+        return out
+    }
 }
 
 const SET_NAME = 'PMTG_82'
@@ -140,18 +164,24 @@ if (require.main === module) {
             '@@picurl': CardUtil.getNewImageUrl(psCard.name, urlType),
             '@@num': psCard.sequenceNumber,
             '@@rarity': psCard.rarityName.toLowerCase(),
-            '@@uuid': psCard.cardId,
         }
         let cardProperties: CardProperties = {
             layout,
             side: 'front',
             type: psCard.types,
             maintype: baseType,
-            manacost: manaCost,
             cmc: psCard.cmc,
+        }
+        if (manaCost.length > 0 || baseType !== 'Land') {
+            cardProperties.manacost = manaCost
         }
         if (hasColors) {
             cardProperties.colors = psCard.colors.join('')
+        }
+        if (baseType === 'Land') {
+            // For now, pretend every land has a color identity of red.
+            console.log(psCard.rulesText)
+            cardProperties.coloridentity = 'R'
         }
         if (hasPt) {
             cardProperties.pt = psCard.ptString
@@ -160,7 +190,7 @@ if (require.main === module) {
         // Create card object.
         let card: Card = {
             name: psCard.name,
-            text: psCard.rulesText,
+            text: CardUtil.formatRulesText(psCard.rulesText),
 
             prop: cardProperties,
             set: cardSetStatus,
@@ -211,7 +241,7 @@ if (require.main === module) {
             // Create card object.
             let card2: Card = {
                 name: psCard.name2,
-                text: psCard.rulesText2,
+                text: CardUtil.formatRulesText(psCard.rulesText2),
 
                 prop: cardProperties2,
                 set: cardSetStatus2,

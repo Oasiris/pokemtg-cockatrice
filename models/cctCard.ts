@@ -8,13 +8,13 @@ export type Card = {
     text: string
 
     prop: CardProperties
-    
+
     /** For each set this card appears in, add a correspondent `set` tag. */
     set: CardSetStatus
 
-    /** 
+    /**
      * Place the corresponding number, as found below, to allow the card to appear in the correct row in-game:
-     * 
+     *
      *   0 -> lands
      *   1 -> non-creature, non-land permanents (Planeswalkers, Enchantments, and Artifacts)
      *  2 -> creatures (including Enchantment Creatures, Artifact Creatures, etc)
@@ -26,7 +26,7 @@ export type Card = {
     token?: 1
     /** If this card comes into play tapped, place a 1 here. If not, then you must remove this tag. */
     cipt?: 1
-    
+
     /** If this card's picture must be shown upside down (eg. flip cards), place a 1 here. If not, then you must remove this tag. */
     upsidedown?: 1
 
@@ -49,7 +49,6 @@ export type CardRelation = {
 }
 
 export type CardProperties = {
-
     /** The card layout, eg. normal, split, transform. */
     layout?: string
 
@@ -63,7 +62,7 @@ export type CardProperties = {
     maintype: string
 
     /** Card mana cost, eg. 1WU. */
-    manacost: string
+    manacost?: string
 
     /** Card converted mana cost, eg. 3. */
     cmc: number | string
