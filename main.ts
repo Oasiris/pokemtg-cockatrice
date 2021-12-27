@@ -164,7 +164,7 @@ if (require.main === module) {
         const cardSetStatus: CardSetStatus = {
             '#text': SET_NAME,
             '@@picurl': CardUtil.getNewImageUrl(psCard.name, urlType),
-            '@@num': psCard.sequenceNumber,
+            // '@@num': psCard.sequenceNumber,
             '@@rarity': rarity,
         }
         let cardProperties: CardProperties = {
@@ -223,7 +223,7 @@ if (require.main === module) {
             const cardSetStatus2: CardSetStatus = {
                 '#text': SET_NAME,
                 '@@picurl': CardUtil.getNewImageUrl(psCard.name, 'back'),
-                '@@num': psCard.sequenceNumber,
+                // '@@num': psCard.sequenceNumber,
                 '@@rarity': rarity,
             }
             let cardProperties2: CardProperties = {
@@ -235,10 +235,10 @@ if (require.main === module) {
                 cmc: 0,
             }
             if (hasColors) {
-                cardProperties.colors = psCard.colors.join('')
+                cardProperties2.colors = psCard.colors.join('')
             }
             if (hasPt) {
-                cardProperties.pt = psCard.ptString2
+                cardProperties2.pt = psCard.ptString2
             }
             // Create card object.
             let card2: Card = {
