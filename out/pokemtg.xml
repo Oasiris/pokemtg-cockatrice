@@ -24090,7 +24090,7 @@
     <cmc>0</cmc>
     <coloridentity>R</coloridentity>
   </prop>
-  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Wastes.png" num="1544" rarity="">PMTG_82</set>
+  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Wastes.png" num="1544" rarity="common">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>
 <card>
@@ -24104,7 +24104,7 @@
     <cmc>0</cmc>
     <coloridentity>R</coloridentity>
   </prop>
-  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Plains.png" num="1545" rarity="">PMTG_82</set>
+  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Plains.png" num="1545" rarity="common">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>
 <card>
@@ -24118,7 +24118,7 @@
     <cmc>0</cmc>
     <coloridentity>R</coloridentity>
   </prop>
-  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min/Island.png" num="1546" rarity="">PMTG_82</set>
+  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min/Island.png" num="1546" rarity="common">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>
 <card>
@@ -24132,7 +24132,7 @@
     <cmc>0</cmc>
     <coloridentity>R</coloridentity>
   </prop>
-  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Swamp.png" num="1547" rarity="">PMTG_82</set>
+  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Swamp.png" num="1547" rarity="common">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>
 <card>
@@ -24146,7 +24146,7 @@
     <cmc>0</cmc>
     <coloridentity>R</coloridentity>
   </prop>
-  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Mountain.png" num="1548" rarity="">PMTG_82</set>
+  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min2/Mountain.png" num="1548" rarity="common">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>
 <card>
@@ -24160,6 +24160,6 @@
     <cmc>0</cmc>
     <coloridentity>R</coloridentity>
   </prop>
-  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min/Forest.png" num="1549" rarity="">PMTG_82</set>
+  <set picurl="https://raw.githubusercontent.com/Oasiris/pokemtg-cockatrice/gh-pages/assets/img-min/Forest.png" num="1549" rarity="common">PMTG_82</set>
   <tablerow>0</tablerow>
 </card>

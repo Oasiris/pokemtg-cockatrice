@@ -52,7 +52,7 @@ export class CardUtil {
             console.log('FullType empty')
             return ''
         }
-        const match: RegExpMatchArray = fullType.match(/^([\w]+\s)?([\w]+\s)?(?<type>\w+)( —.+)?$/)
+        const match: RegExpMatchArray = fullType.match(/^([\w]+\s)?([\w]+\s)?(?<type>\w+)( —?.+)?/)
         if (match === null) {
             throw new Error(`Couldn't parse fulltype '${fullType}' into a base type`)
         }
@@ -155,6 +155,8 @@ if (require.main === module) {
         const hasPt: boolean = psCard.ptString.length > 0
         const isToken: boolean = psCard.rarity === 'T'
 
+        const rarity = psCard.rarityName.toLowerCase() || 'common'
+
         const urlType = psCard.shape === 'double' ? 'front' : 'none'
         const layout = psCard.shape === 'double' ? 'transform' : 'normal'
 
@@ -163,7 +165,7 @@ if (require.main === module) {
             '#text': SET_NAME,
             '@@picurl': CardUtil.getNewImageUrl(psCard.name, urlType),
             '@@num': psCard.sequenceNumber,
-            '@@rarity': psCard.rarityName.toLowerCase(),
+            '@@rarity': rarity,
         }
         let cardProperties: CardProperties = {
             layout,
@@ -222,7 +224,7 @@ if (require.main === module) {
                 '#text': SET_NAME,
                 '@@picurl': CardUtil.getNewImageUrl(psCard.name, 'back'),
                 '@@num': psCard.sequenceNumber,
-                '@@rarity': psCard.rarityName.toLowerCase(),
+                '@@rarity': rarity,
             }
             let cardProperties2: CardProperties = {
                 layout,
