@@ -1,4 +1,3 @@
-
 type HtmlString = string
 type Url = string
 
@@ -36,7 +35,7 @@ export type PsCard = {
     illustrator: string
 
     name2?: string
-    manacost2?: string
+    manaCost2?: string
     types2?: string
     rulesText2?: string
     flavorText2?: string

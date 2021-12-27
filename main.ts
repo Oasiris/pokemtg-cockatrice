@@ -6,43 +6,52 @@ import uniq from 'lodash/fp/uniq'
 
 import { Card, CardProperties, CardSetStatus } from './models/cctCard'
 import { PsCard } from './models/psCard'
+
 import cardData from './in/rawData'
 
-// const INPUT_FILEPATH = './in/rawData.ts'
-
-// if (require.main === module) {
-//     console.log('Reading...')
-    
-//     // === Read ===
-//     const text = read(resolve(__dirname, INPUT_FILEPATH), 'utf8')
-//     console.log('Parsing...')
-//     const json = JSON.parse(text)
-//     console.log('Parse complete.')
-//     console.log(json)
-    
-
-
-//     console.log('Hi')
-// }
-
 const MANA_COST_LONG_TO_SHORT = {
-    'colorless': 'C',
-    'black': 'B',
-    'white': 'W',
-    'blue': 'U',
-    'red': 'R',
-    'green': 'G',
-    'snow': 'S'
+    colorless: 'C',
+    black: 'B',
+    white: 'W',
+    blue: 'U',
+    red: 'R',
+    green: 'G',
+    snow: 'S',
 }
 
+const GITHUB_AUTHOR_AND_REPO_NAME = 'Oasiris/pokemtg-cockatrice'
+const IMG_DIR_BRANCH_NAME = 'gh-pages'
+const IMAGE_DIR_NAME_A_L = 'assets/img-min'
+const IMAGE_DIR_NAME_M_Z = 'assets/img-min2'
 
 export class CardUtil {
-    /** 
+    /**
+     * @returns The image URL for the card, hosted on github.com.
+     */
+    static getNewImageUrl(cardName: string, transformType: 'front' | 'back' | 'none'): string {
+        let name: string = encodeURIComponent(encodeURIComponent(cardName))
+        if (['front', 'back'].includes(transformType)) {
+            name += '_' + transformType.toUpperCase()
+        }
+        const IMAGE_DIR_NAME =
+            name[0].toUpperCase() >= 'M' ? IMAGE_DIR_NAME_M_Z : IMAGE_DIR_NAME_A_L
+        return (
+            `https://raw.githubusercontent.com/` +
+            `${GITHUB_AUTHOR_AND_REPO_NAME}/${IMG_DIR_BRANCH_NAME}/${IMAGE_DIR_NAME}/` +
+            `${name}.png`
+        )
+    }
+
+    /**
      * @param fullType A card's full type, eg. "Legendary Creature — Spirit Cleric".
      * @returns The card's main type, eg. "Creature".
      */
     static getBaseType(fullType: string): string {
         fullType = fullType.trim()
+        if (fullType === '') {
+            console.log('FullType empty')
+            return ''
+        }
         const match: RegExpMatchArray = fullType.match(/^([\w]+\s)?([\w]+\s)?(?<type>\w+)( —.+)?$/)
         if (match === null) {
             throw new Error(`Couldn't parse fulltype '${fullType}' into a base type`)
@@ -52,11 +61,12 @@ export class CardUtil {
     }
 
     /**
-     * @param manaCostHtml A card's mana cost as an HTML string, e.g. 
+     * @param manaCostHtml A card's mana cost as an HTML string, e.g.
      *      '<span class="icon-wrapper"><i class="mtg mana-3"></i></span>'.
      * @returns The card's mana cost, eg "1UW".
      */
     static getManaCost(manaCostHtml: string): string {
+        manaCostHtml = manaCostHtml.trim()
         if (manaCostHtml === '') {
             return ''
         }
@@ -64,12 +74,12 @@ export class CardUtil {
         if (matches === null) {
             throw new Error(`Couldn't parse manaCostHtml '${manaCostHtml}' into a mana cost`)
         }
-        let manaCost: string = ""
+        let manaCost: string = ''
         for (let item of matches) {
             item = item.replace(/"/g, '').replace(/i class=mtg /, '')
-            if (item.startsWith("mana")) {
+            if (item.startsWith('mana')) {
                 manaCost += item.slice(item.indexOf('mana') + 5).toUpperCase()
-            } else if (item.startsWith("hybrid")) {
+            } else if (item.startsWith('hybrid')) {
                 const left = item[item.length - 2]
                 const right = item[item.length - 1]
                 manaCost += `{${left.toUpperCase()}/${right.toUpperCase()}}`
@@ -102,12 +112,9 @@ export class CardUtil {
     }
 }
 
-
-
 const SET_NAME = 'PMTG_82'
 
 if (require.main === module) {
-
     const cctCards: Card[] = []
 
     // === Step 1 ===
@@ -124,18 +131,19 @@ if (require.main === module) {
         const hasPt: boolean = psCard.ptString.length > 0
         const isToken: boolean = psCard.rarity === 'T'
 
+        const urlType = psCard.shape === 'double' ? 'front' : 'none'
+        const layout = psCard.shape === 'double' ? 'transform' : 'normal'
+
         // Create intermediate objects.
         const cardSetStatus: CardSetStatus = {
             '#text': SET_NAME,
-            '@@picurl': psCard.artUrl,
+            '@@picurl': CardUtil.getNewImageUrl(psCard.name, urlType),
             '@@num': psCard.sequenceNumber,
             '@@rarity': psCard.rarityName.toLowerCase(),
             '@@uuid': psCard.cardId,
         }
         let cardProperties: CardProperties = {
-            // TODO: Differentiate here.
-            layout: 'normal',
-            // TODO: Differentiate here.
+            layout,
             side: 'front',
             type: psCard.types,
             maintype: baseType,
@@ -153,7 +161,7 @@ if (require.main === module) {
         let card: Card = {
             name: psCard.name,
             text: psCard.rulesText,
-            
+
             prop: cardProperties,
             set: cardSetStatus,
 
@@ -164,6 +172,54 @@ if (require.main === module) {
         }
 
         cctCards.push(card)
+        // ——————————————————————————
+        // Figure out if the card transforms or not.
+        if (!['normal', 'double'].includes(psCard.shape)) {
+            throw new Error(`Unknown card shape '${psCard.shape}' on card ${psCard.name}`)
+        }
+        if (psCard.shape === 'double') {
+            // Add the transformation card, too.
+            // Transformation cards have mana costs and CMC of 0. They share all of the colors
+            // of their pre-transformation.
+            if (psCard.types2 === undefined || psCard.manaCost2 === undefined) {
+                console.log('UNDEFINED', psCard.name2)
+            }
+            const manaCost2 = CardUtil.getManaCost(psCard.manaCost2)
+            const baseType2 = CardUtil.getBaseType(psCard.types2)
+            const tableRow2 = CardUtil.getTableRow(baseType2)
+
+            const cardSetStatus2: CardSetStatus = {
+                '#text': SET_NAME,
+                '@@picurl': CardUtil.getNewImageUrl(psCard.name, 'back'),
+                '@@num': psCard.sequenceNumber,
+                '@@rarity': psCard.rarityName.toLowerCase(),
+            }
+            let cardProperties2: CardProperties = {
+                layout,
+                side: 'back',
+                type: psCard.types2,
+                maintype: baseType2,
+                manacost: manaCost2,
+                cmc: 0,
+            }
+            if (hasColors) {
+                cardProperties.colors = psCard.colors.join('')
+            }
+            if (hasPt) {
+                cardProperties.pt = psCard.ptString2
+            }
+            // Create card object.
+            let card2: Card = {
+                name: psCard.name2,
+                text: psCard.rulesText2,
+
+                prop: cardProperties2,
+                set: cardSetStatus2,
+
+                tablerow: tableRow2,
+            }
+            cctCards.push(card2)
+        }
     }
     // console.log(cctCards.slice(0, 10))
 
@@ -173,8 +229,8 @@ if (require.main === module) {
     const options = {
         arrayNodeName: 'card',
         ignoreAttributes: false,
-        attributeNamePrefix: "@@",
-        format: true
+        attributeNamePrefix: '@@',
+        format: true,
     }
     const CardsBuilder = new XMLBuilder(options)
     console.log(`Building...`)
