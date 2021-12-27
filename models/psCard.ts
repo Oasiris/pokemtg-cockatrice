@@ -5,14 +5,14 @@ type Url = string
 /**
  * Card, as represented on PlaneSculptor.
  */
-type PsCard = {
+export type PsCard = {
     cardId: number
     sequenceNumber: number
     shape: string
     name: string
     manaCost: HtmlString
     cmc: number
-    colors: []
+    colors: string[]
 
     /** Full type, not base type. E.g. "Enchantment Creature — Elf Druid". */
     types: string

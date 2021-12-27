@@ -1,8 +1,11 @@
-import { readFileSync as read } from 'fs'
+import { readFileSync as read, writeFileSync as write } from 'fs'
 import { resolve } from 'path'
 
+import { XMLParser, XMLBuilder, XMLValidator } from 'fast-xml-parser'
 import uniq from 'lodash/fp/uniq'
 
+import { Card, CardProperties, CardSetStatus } from './models/cctCard'
+import { PsCard } from './models/psCard'
 import cardData from './in/rawData'
 
 // const INPUT_FILEPATH = './in/rawData.ts'
@@ -80,19 +83,105 @@ export class CardUtil {
         }
         return manaCost
     }
+
+    /**
+     * @returns 0 for lands, 2 for creatures, 3 for non-permanents (instants + sorceries), and 1 for everything else.
+     */
+    static getTableRow(baseType: string): 0 | 1 | 2 | 3 {
+        baseType = baseType.toLowerCase()
+        if (baseType === 'land') {
+            return 0
+        }
+        if (baseType === 'creature') {
+            return 2
+        }
+        if (['instant', 'sorcery'].includes(baseType)) {
+            return 3
+        }
+        return 1
+    }
 }
 
 
 
+const SET_NAME = 'PMTG_82'
 
 if (require.main === module) {
-    let counter = 0
-    for (const data of cardData) {
-        if (counter++ >= 50) {
-            console.log(data.name)
-            const manaCost = CardUtil.getManaCost(data.manaCost)
-            console.log(manaCost)
+
+    const cctCards: Card[] = []
+
+    // === Step 1 ===
+    // Process the JSON.
+
+    for (const i in cardData) {
+        // Take the PlaneSculptors card.
+        const psCard: PsCard = cardData[i] as PsCard
+        // Parse data.
+        const baseType = CardUtil.getBaseType(psCard.types)
+        const tableRow = CardUtil.getTableRow(baseType)
+        const manaCost = CardUtil.getManaCost(psCard.manaCost)
+        const hasColors: boolean = psCard.colors.length > 0
+        const hasPt: boolean = psCard.ptString.length > 0
+        const isToken: boolean = psCard.rarity === 'T'
+
+        // Create intermediate objects.
+        const cardSetStatus: CardSetStatus = {
+            '#text': SET_NAME,
+            '@@picurl': psCard.artUrl,
+            '@@num': psCard.sequenceNumber,
+            '@@rarity': psCard.rarityName.toLowerCase(),
         }
-        // TODO
+        let cardProperties: CardProperties = {
+            // TODO: Differentiate here.
+            layout: 'normal',
+            // TODO: Differentiate here.
+            side: 'front',
+            type: psCard.types,
+            maintype: baseType,
+            manacost: manaCost,
+            cmc: psCard.cmc,
+        }
+        if (hasColors) {
+            cardProperties.colors = psCard.colors.join('')
+        }
+        if (hasPt) {
+            cardProperties.pt = psCard.ptString
+        }
+
+        // Create card object.
+        let card: Card = {
+            name: psCard.name,
+            text: psCard.rulesText,
+            
+            prop: cardProperties,
+            set: cardSetStatus,
+
+            tablerow: tableRow,
+        }
+        if (isToken) {
+            card.token = 1
+        }
+
+        cctCards.push(card)
     }
+    // console.log(cctCards.slice(0, 10))
+
+    // === Step 2 ===
+    // Convert to XML using XMLBuilder.
+    const mini = cctCards.slice(8, 10)
+
+    const options = {
+        arrayNodeName: 'card',
+        ignoreAttributes: false,
+        attributeNamePrefix: "@@",
+        format: true
+    }
+    const CardsBuilder = new XMLBuilder(options)
+    console.log(`Building...`)
+    const cardsXmlString: string = CardsBuilder.build(cctCards)
+    console.log(`Building finished.`)
+
+    /// === Write ===
+    write(resolve(__dirname, `./out/pokemtg.xml`), cardsXmlString, 'utf8')
+    console.log(`Writing complete.`)
 }

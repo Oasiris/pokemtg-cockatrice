@@ -12,14 +12,6 @@ export type Card = {
     /** For each set this card appears in, add a correspondent `set` tag. */
     set: CardSetStatus
 
-    /** If the card is a token (thus can't be directly played from topdeck), place a 1 here. If not, then you must remove this tag. */
-    token?: 1
-    /** If this card comes into play tapped, place a 1 here. If not, then you must remove this tag. */
-    cipt?: 1
-    
-    /** If this card's picture must be shown upside down (eg. flip cards), place a 1 here. If not, then you must remove this tag. */
-    upsidedown?: 1
-
     /** 
      * Place the corresponding number, as found below, to allow the card to appear in the correct row in-game:
      * 
@@ -29,6 +21,14 @@ export type Card = {
      *  3 -> non-permanent cards (Instants, Sorceries)
      */
     tablerow: number
+
+    /** If the card is a token (thus can't be directly played from topdeck), place a 1 here. If not, then you must remove this tag. */
+    token?: 1
+    /** If this card comes into play tapped, place a 1 here. If not, then you must remove this tag. */
+    cipt?: 1
+    
+    /** If this card's picture must be shown upside down (eg. flip cards), place a 1 here. If not, then you must remove this tag. */
+    upsidedown?: 1
 
     /** If the card can create or transform itself into another card (eg. create a token or flip), add one or more related tags. The card's name goes in the tag. */
     related?: CardRelation[]
@@ -60,7 +60,7 @@ export type CardProperties = {
     type: string
 
     /**  The main type of the card, eg. Creature. */
-    maintype: 'Instant'
+    maintype: string
 
     /** Card mana cost, eg. 1WU. */
     manacost: string
@@ -87,24 +87,25 @@ export type CardProperties = {
 }
 
 /** (Any string is OK here.) */
-export type CardRarity = 'common' | 'uncommon' | 'rare' | 'mythic'
+// export type CardRarity = 'common' | 'uncommon' | 'rare' | 'mythic'
+export type CardRarity = string
 
 export type CardSetStatus = {
     /** The name (ID) of the set. */
-    set: string
+    '#text': string
 
     /** The complete URL (including the protocol prefix, eg. http://) to a picture of this card. This url will be used to download the card picture. */
-    picurl: string
+    '@@picurl': string
 
     /** Optional. The card's collector number in the set. */
-    num?: number | string
+    '@@num'?: number | string
 
     /** Optional. Card rarity. */
-    rarity?: CardRarity
+    '@@rarity'?: CardRarity
 
     /** Optional. UUID of the card in this set; must be unique for every single card. */
-    uuid?: string
+    '@@uuid'?: string
 
     /** Optional. The card's multiverse ID. This is a special code assigned to each card in a specific game (MTG). */
-    muid: number | string
+    '@@muid'?: number | string
 }
